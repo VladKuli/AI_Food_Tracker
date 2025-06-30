@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # Route to Food Service
+      routes:
+        - id: food-service
+          uri: lb://food-service
+          predicates:
+            - Path=/api/food/**
+        - id: calorie-service
+          uri: lb://calorie-service
+          predicates:
+            - Path=/api/calories/**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # если валидируете JWT выпущенные отдельным auth-сервисом
+          jwk-set-uri: http://auth-server/oauth2/jwks
+
+eureka:
+  client:
+    # если используете Service Discovery (Eureka/Consul)
+    enabled: false
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

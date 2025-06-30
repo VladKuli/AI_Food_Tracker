@@ -1,0 +1,3 @@
+rootProject.name = 'aifoodtracker'
+include 'api-gateway', 'food-service', 'calorie-service', 'auth-service'
+
