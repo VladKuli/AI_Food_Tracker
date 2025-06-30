@@ -1,6 +1,6 @@
 package com.ai.food.tracker.controller;
 
-import com.ai.food.tracker.model.User;
+import com.ai.food.tracker.model.AppUser;
 import com.ai.food.tracker.repository.UserRepository;
 import com.ai.food.tracker.request.AuthRequest;
 import com.ai.food.tracker.service.JwtService;
@@ -31,10 +31,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthRequest request) {
         // you might want to check for existing username here
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
+        AppUser appUser = new AppUser();
+        appUser.setUsername(request.getUsername());
+        appUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(appUser);
         return ResponseEntity.ok("User registered successfully");
     }
 

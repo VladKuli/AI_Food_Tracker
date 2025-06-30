@@ -6,17 +6,31 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:h2:mem:authdb;DB_CLOSE_DELAY=-1
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://dpg-d1h6frvfte5s739co5mg-a.frankfurt-postgres.render.com:5432/database_ic3y
+
+    driver-class-name: org.postgresql.Driver
+
+    username: database_ic3y_user
+    password: WVwbgmdllia2gWatqs9fCFFcm3EUVBsM
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 security:
   jwt:
     secret: 3de86d2e1023328329e86895cff71a78
-    expiration: 3600000  # 1 hour
+    expiration: 3600000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    root: INFO
+    com.ai.food.tracker.authservice: DEBUG
