@@ -5,6 +5,12 @@ spring:
   application:
     name: food-service
 
+  # OpenAI
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+
+  # Kafka Producer
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -12,22 +18,16 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   datasource:
-    url: jdbc:h2:mem:fooddb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://dpg-d1h6frvfte5s739co5mg-a.frankfurt-postgres.render.com:5432/database_ic3y
+    driver-class-name: org.postgresql.Driver
+    username: database_ic3y_user
+    password: WVwbgmdllia2gWatqs9fCFFcm3EUVBsM
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
-  ai:
-    openai:
-      api-key: ${OPENAI_API_KEY}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+security:
+  jwt:
+    secret: 3de86d2e1023328329e86895cff71a78

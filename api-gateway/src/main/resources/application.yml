@@ -7,28 +7,31 @@ spring:
 
   cloud:
     gateway:
-      # Route to Food Service
       routes:
-        - id: food-service
-          uri: lb://food-service
+        - id: auth
+          uri: http://localhost:8083
+          predicates:
+            - Path=/auth/**
+
+        - id: food
+          uri: http://localhost:8081
           predicates:
             - Path=/api/food/**
-        - id: calorie-service
-          uri: lb://calorie-service
+
+        - id: calorie
+          uri: http://localhost:8082
           predicates:
             - Path=/api/calories/**
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          # если валидируете JWT выпущенные отдельным auth-сервисом
-          jwk-set-uri: http://auth-server/oauth2/jwks
+security:
+  jwt:
+    secret: ${SECURITY_JWT_SECRET:3de86d2e1023328329e86895cff71a78}
 
-eureka:
-  client:
-    # если используете Service Discovery (Eureka/Consul)
-    enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
 
 logging:
   level:
