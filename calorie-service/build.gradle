@@ -1,19 +1,49 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id 'org.springframework.boot' version '3.3.7'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.ai.food.tracker'
+version = '0.0.1-SNAPSHOT'
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
+
+repositories { mavenCentral() }
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.4"
+    }
 }
 
 dependencies {
-    // Spring Boot core and Kafka consumer
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.kafka:spring-kafka'
+    // Spring MVC + Tomcat
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // JPA and database driver
+    // JPA + PostgreSQL
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly   'org.postgresql:postgresql'
 
-    // Testing dependencies
+    // Security (Resource Server JWT)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+
+    // Kafka Consumer
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // OpenAPI / Swagger UI
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Tests
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
+
+test { useJUnitPlatform() }
