@@ -27,6 +27,7 @@ public class CalorieConsumerService {
         rec.setCalories(resp.getCalories());
         rec.setDetails(resp.getDetails());
         rec.setTimestamp(Instant.now());
+        rec.setUsername(resp.getUsername());
         repo.save(rec);
     }
 

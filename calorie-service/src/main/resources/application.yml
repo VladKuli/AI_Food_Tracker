@@ -5,28 +5,28 @@ spring:
   application:
     name: calorie-service
 
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: calorie-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/calorie_db
+    url: jdbc:postgresql://dpg-d1h6frvfte5s739co5mg-a.frankfurt-postgres.render.com:5432/database_ic3y
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
+    username: database_ic3y_user
+    password: WVwbgmdllia2gWatqs9fCFFcm3EUVBsM
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: calorie-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.ai.food.tracker.calorieservice.dto
+
+# JWT secret for your custom JwtDecoder
+security:
+  jwt:
+    secret: 3de86d2e1023328329e86895cff71a78

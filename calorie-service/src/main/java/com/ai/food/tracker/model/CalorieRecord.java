@@ -16,10 +16,10 @@ public class CalorieRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String messageId;
     private int calories;
     private String details;
     private Instant timestamp;
+    private String username;
 
 }

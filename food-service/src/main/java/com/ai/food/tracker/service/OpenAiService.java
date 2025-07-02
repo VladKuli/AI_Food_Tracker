@@ -28,7 +28,6 @@ public class OpenAiService {
                 .defaultHeader("Authorization", "Bearer " + apiKey)
                 .build();
 
-        // Собираем тело запроса
         var body = mapper.createObjectNode()
                 .put("model", "gpt-4")
                 .set("messages", mapper.createArrayNode()

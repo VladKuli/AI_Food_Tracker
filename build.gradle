@@ -42,4 +42,14 @@ subprojects {
 	tasks.named('test') {
 		useJUnitPlatform()
 	}
+	tasks.register('startAllServices') {
+		group = 'application'
+		description = 'Run all microservices (auth, gateway, food, calorie) in parallel'
+		dependsOn(
+				':auth-service:bootRun',
+				':api-gateway:bootRun',
+				':food-service:bootRun',
+				':calorie-service:bootRun'
+		)
+	}
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CalorieRecordRepository extends JpaRepository<CalorieRecord, Long> {
 
-    List<CalorieRecord> findAllByOrderByTimestampDesc();
+    List<CalorieRecord> findByUsernameOrderByTimestampDesc(String username);
 }

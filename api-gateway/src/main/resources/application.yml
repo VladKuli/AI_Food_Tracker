@@ -2,26 +2,24 @@ server:
   port: 8080
 
 spring:
-  application:
-    name: api-gateway
-
   cloud:
     gateway:
+      default-filters:
+        - PreserveHostHeader
       routes:
         - id: auth
-          uri: http://localhost:8083
+          uri: http://auth-service:8083
           predicates:
             - Path=/auth/**
-
         - id: food
-          uri: http://localhost:8081
+          uri: http://food-service:8081
           predicates:
             - Path=/api/food/**
-
         - id: calorie
-          uri: http://localhost:8082
+          uri: http://calorie-service:8082
           predicates:
             - Path=/api/calories/**
+
 
 security:
   jwt:

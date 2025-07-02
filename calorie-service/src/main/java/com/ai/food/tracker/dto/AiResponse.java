@@ -11,4 +11,5 @@ public class AiResponse {
     private String id;
     private int calories;
     private String details;
+    private String username;
 }

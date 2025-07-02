@@ -1,23 +1,103 @@
-# файл docker-compose.yml
 services:
+  # ----------------------------
+  # Zookeeper (for Kafka coordination)
+  # ----------------------------
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zk
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
 
+  # ----------------------------
+  # Kafka broker
+  # ----------------------------
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
       - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ZOOKEEPER_CONNECT: zk:2181
+      # внутри Docker Compose клиенты (Gateway, Food, Calorie) должны
+      # обращаться по имени "kafka:9092"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+  # ----------------------------
+  # Auth Service
+  # ----------------------------
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      # прим.: application-docker.yml должен содержать:
+      # spring.datasource.url, spring.datasource.username / password
+      # spring.security.jwt.secret и т. д.
+    depends_on:
+      - kafka
+
+  # ----------------------------
+  # API Gateway
+  # ----------------------------
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      # в application-docker.yml маршруты должны указывать на сервисы по их именам:
+      #   uri: http://auth-service:8083
+      #   uri: http://food-service:8081
+      #   uri: http://calorie-service:8082
+    depends_on:
+      - auth-service
+      - food-service
+      - calorie-service
+
+  # ----------------------------
+  # Food Service
+  # ----------------------------
+  food-service:
+    build:
+      context: ./food-service
+      dockerfile: Dockerfile
+    container_name: food-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - kafka
+
+  # ----------------------------
+  # Calorie Service
+  # ----------------------------
+  calorie-service:
+    build:
+      context: ./calorie-service
+      dockerfile: Dockerfile
+    container_name: calorie-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - kafka
